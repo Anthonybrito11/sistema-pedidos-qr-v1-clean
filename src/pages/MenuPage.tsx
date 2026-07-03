@@ -43,21 +43,16 @@ export function MenuPage({
             </p>
           ) : null}
 
-          <div className="mb-5 flex h-44 w-44 items-center justify-center rounded-full bg-cream p-3 shadow-soft ring-8 ring-white/10 sm:h-52 sm:w-52" aria-hidden="true">
+          <div className="mb-5 flex h-44 w-44 items-center justify-center rounded-full ring-8 ring-white/100 sm:h-52 sm:w-52" aria-hidden="true">
             <img
-              src={`${import.meta.env.BASE_URL}Images/LogoEjemploCuki.png`}
+              src={`${import.meta.env.BASE_URL}Images/logoCuki2.png`}
               alt="logo cuki yun yun"
               className="h-full w-full object-contain"
             />
           </div>
 
           <p className="text-xs font-black uppercase tracking-[0.16em] text-sunshine">Menu digital</p>
-          <h1 className="mt-2 max-w-3xl text-3xl font-black leading-tight text-white sm:text-5xl">
-            Sabores frescos, antojos felices y pedidos sin vueltas
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-white/85 sm:text-base">
-            Explora el menu, mira cada producto con calma y agrega tus favoritos en segundos.
-          </p>
+
         </div>
       </section>
 

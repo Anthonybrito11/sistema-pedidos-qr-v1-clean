@@ -41,8 +41,8 @@ export function OrderTypeSelector({
   return (
     <section aria-labelledby="order-type-title">
       <div>
-        <p className="text-sm font-semibold text-brand-700">Modalidad</p>
-        <h2 id="order-type-title" className="mt-1 text-2xl font-black text-slate-950">
+        <p className="section-kicker">Modalidad</p>
+        <h2 id="order-type-title" className="mt-1 text-2xl font-black text-brand-900">
           Como quieres recibir tu pedido?
         </h2>
       </div>
@@ -56,25 +56,25 @@ export function OrderTypeSelector({
             <button
               key={option.id}
               type="button"
-              className={`min-h-32 rounded-lg border p-4 text-left transition ${
+              className={`min-h-32 rounded-lg border p-4 text-left transition duration-200 ${
                 selected
-                  ? 'border-brand-700 bg-brand-50 ring-4 ring-brand-100'
-                  : 'border-slate-200 bg-white hover:border-brand-100 hover:bg-brand-50'
+                  ? 'border-mint bg-mint/10 shadow-card ring-4 ring-mint/15'
+                  : 'border-brand-700/15 bg-paper hover:-translate-y-0.5 hover:border-brand-700/30 hover:bg-cream'
               }`}
               onClick={() => onChange(option.id)}
               aria-pressed={selected}
             >
               <span
                 className={`inline-flex h-10 w-10 items-center justify-center rounded-lg ${
-                  selected ? 'bg-brand-700 text-white' : 'bg-slate-100 text-slate-700'
+                  selected ? 'bg-brand-700 text-white' : 'bg-cream text-brand-700'
                 }`}
               >
                 <Icon size={20} aria-hidden="true" />
               </span>
-              <span className="mt-3 block text-base font-black text-slate-950">
+              <span className="mt-3 block text-base font-black text-brand-900">
                 {option.title}
               </span>
-              <span className="mt-1 block text-sm leading-5 text-slate-600">
+              <span className="mt-1 block text-sm font-medium leading-5 text-brand-700/75">
                 {option.id === 'table' && tableNumber
                   ? `Mesa detectada: ${tableNumber}`
                   : option.description}

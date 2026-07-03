@@ -56,7 +56,7 @@ export function CheckoutPage({
   onReview,
 }: CheckoutPageProps) {
   return (
-    <main className="content-wrap grid gap-5 pb-12 pt-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+    <main className="content-wrap grid gap-5 pb-12 pt-6 lg:grid-cols-[minmax(0,1fr)_380px]">
       <div className="space-y-5">
         <button type="button" className="secondary-button" onClick={onBack}>
           <ArrowLeft size={17} aria-hidden="true" />
@@ -110,7 +110,7 @@ export function CheckoutPage({
           Confirmar orden
           <ArrowRight size={17} aria-hidden="true" />
         </button>
-        <p className="mt-3 rounded-lg bg-white px-4 py-3 text-sm leading-6 text-slate-600">
+        <p className="mt-3 rounded-lg bg-paper px-4 py-3 text-sm font-medium leading-6 text-brand-700/75 shadow-sm">
           Total estimado: <strong>{formatCurrency(total)}</strong>. El negocio
           confirmara disponibilidad por WhatsApp.
         </p>

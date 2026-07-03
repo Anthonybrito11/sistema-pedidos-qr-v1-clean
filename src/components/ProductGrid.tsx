@@ -31,12 +31,13 @@ export function ProductGrid({
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      {products.map((product) => (
+      {products.map((product, index) => (
         <ProductCard
           key={product.id}
           product={product}
           quantity={getQuantity(product.id)}
           onAdd={onAddToCart}
+          index={index}
         />
       ))}
     </div>

@@ -32,10 +32,10 @@ export function ConfirmationPage({
 
   return (
     <main className="content-wrap grid gap-5 pb-12 pt-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-      <section className="rounded-lg border border-slate-200 bg-white p-6">
-        <CheckCircle2 className="text-brand-700" size={42} aria-hidden="true" />
-        <h1 className="mt-4 text-3xl font-black text-slate-950">Pedido enviado</h1>
-        <p className="mt-3 text-sm leading-6 text-slate-600">
+      <section className="surface-card p-6">
+        <CheckCircle2 className="text-mint" size={42} aria-hidden="true" />
+        <h1 className="mt-4 text-3xl font-black text-brand-900">Pedido enviado</h1>
+        <p className="mt-3 text-sm font-medium leading-6 text-brand-700/75">
           Tu mensaje se abrio en WhatsApp. {business.name} confirmara el pedido,
           disponibilidad y tiempo estimado por ese mismo chat.
         </p>

@@ -26,33 +26,37 @@ export function MenuPage({
 }: MenuPageProps) {
   const selectedCategoryName =
     categories.find((category) => category.id === selectedCategory)?.name ?? 'Menu'
-const filteredProducts = selectedCategory === 'all'
-  ? products
-  : products.filter((product) => product.category === selectedCategory)
+  const filteredProducts = selectedCategory === 'all'
+    ? products
+    : products.filter((product) => product.category === selectedCategory)
 
   const firstCategory = categories[0]?.id ?? ''
 
   return (
     <>
-      <section className="bg-white">
-        <div className="content-wrap py-6 flex flex-col items-center text-center">
+      <section className="relative overflow-hidden bg-brand-700 text-white">
+        <div className="absolute inset-x-0 bottom-0 h-2 bg-[linear-gradient(90deg,#EA5749_0_25%,#2EB89D_25%_50%,#FBC017_50%_75%,#FBFBED_75%_100%)]" />
+        <div className="content-wrap relative flex flex-col items-center px-5 pb-10 pt-8 text-center sm:pb-12">
           {tableNumber ? (
-            <p className="mb-4 inline-flex rounded-lg bg-brand-50 px-3 py-2 text-xs font-bold text-brand-700">
+            <p className="mb-4 inline-flex rounded-lg bg-cream px-3 py-2 text-xs font-black text-brand-700 shadow-sm">
               Pedido desde mesa {tableNumber}
             </p>
           ) : null}
-          
-          {/* Logo Placeholder */}
-          <div className="mb-4 flex h-52 w-52 items-center justify-center  text-slate-400 font-bold text-xs uppercase tracking-wider select-none" aria-hidden="true">
-          <img
+
+          <div className="mb-5 flex h-44 w-44 items-center justify-center rounded-full bg-cream p-3 shadow-soft ring-8 ring-white/10 sm:h-52 sm:w-52" aria-hidden="true">
+            <img
               src={`${import.meta.env.BASE_URL}Images/LogoEjemploCuki.png`}
               alt="logo cuki yun yun"
+              className="h-full w-full object-contain"
             />
           </div>
 
-          <h1 className="text-2xl font-black text-slate-950">Tu antojo favorito comienza aquí ✨</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-            Explora nuestro menú, agrega tus favoritos y recibelo con facilidad.
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-sunshine">Menu digital</p>
+          <h1 className="mt-2 max-w-3xl text-3xl font-black leading-tight text-white sm:text-5xl">
+            Sabores frescos, antojos felices y pedidos sin vueltas
+          </h1>
+          <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-white/85 sm:text-base">
+            Explora el menu, mira cada producto con calma y agrega tus favoritos en segundos.
           </p>
         </div>
       </section>
@@ -63,22 +67,34 @@ const filteredProducts = selectedCategory === 'all'
         onSelect={onSelectCategory}
       />
 
-      <main className="content-wrap pb-28 pt-5 md:pb-12">
-        <div className="mb-4 flex items-end justify-between gap-3">
+      <main className="content-wrap pb-28 pt-6 md:pb-14">
+        <div className="mb-5 flex items-end justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold text-brand-700">Categoria</p>
-            <h2 className="text-2xl font-black text-slate-950">{selectedCategoryName}</h2>
+            <p className="section-kicker">Categoria</p>
+            <h2 className="mt-1 text-2xl font-black text-brand-900 sm:text-3xl">{selectedCategoryName}</h2>
           </div>
-          <p className="text-sm font-semibold text-slate-500">
+          <p className="shrink-0 rounded-lg bg-paper px-3 py-2 text-xs font-black text-brand-700 shadow-sm">
             {filteredProducts.length} productos
           </p>
         </div>
 
         {menuStatus === 'loading' ? (
-          <EmptyState
-            title="Cargando menu"
-            message="Estamos preparando los productos disponibles."
-          />
+          <div className="grid gap-4 md:grid-cols-2" aria-label="Cargando menu">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="surface-card grid grid-cols-[118px_minmax(0,1fr)] overflow-hidden sm:grid-cols-[168px_minmax(0,1fr)]">
+                <div className="skeleton-shimmer min-h-36 rounded-none" />
+                <div className="space-y-3 p-4">
+                  <div className="skeleton-shimmer h-5 w-3/4" />
+                  <div className="skeleton-shimmer h-4 w-full" />
+                  <div className="skeleton-shimmer h-4 w-2/3" />
+                  <div className="flex items-center justify-between pt-3">
+                    <div className="skeleton-shimmer h-6 w-20" />
+                    <div className="skeleton-shimmer h-11 w-28" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         ) : null}
 
         {menuStatus === 'error' ? (

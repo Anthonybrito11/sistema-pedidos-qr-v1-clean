@@ -57,19 +57,19 @@ export function ReviewPage({
           Editar datos
         </button>
 
-        <section className="rounded-lg border border-slate-200 bg-white p-4">
-          <p className="text-sm font-semibold text-brand-700">Revision final</p>
-          <h1 className="mt-1 text-2xl font-black text-slate-950">
+        <section className="surface-card p-4 sm:p-5">
+          <p className="section-kicker">Revision final</p>
+          <h1 className="mt-1 text-2xl font-black text-brand-900">
             Confirma antes de abrir WhatsApp
           </h1>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
+          <p className="mt-2 text-sm font-medium leading-6 text-brand-700/75">
             El pedido se enviara como un mensaje estructurado. El negocio debe
             confirmar disponibilidad y tiempo de entrega por WhatsApp.
           </p>
         </section>
 
-        <section className="rounded-lg border border-slate-200 bg-white p-4">
-          <h2 className="text-xl font-black text-slate-950">Datos del pedido</h2>
+        <section className="surface-card p-4 sm:p-5">
+          <h2 className="text-xl font-black text-brand-900">Datos del pedido</h2>
           <dl className="mt-4 grid gap-3 text-sm">
             <InfoRow label="Modalidad" value={getOrderTypeLabel(order.orderType)} />
             {order.orderType === 'table' ? (
@@ -112,14 +112,14 @@ export function ReviewPage({
           total={order.total}
         />
 
-        <div className="space-y-3 rounded-lg border border-slate-200 bg-white p-4">
+        <div className="surface-card space-y-3 p-4">
           <WhatsAppButton
             disabled={order.items.length === 0}
             loading={isSubmitting}
             onClick={() => void handleFinish()}
           />
           {submitError ? (
-            <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-800">
+            <p className="rounded-lg bg-sunshine/20 px-3 py-2 text-sm font-bold text-brand-900">
               {submitError}
             </p>
           ) : null}
@@ -131,7 +131,7 @@ export function ReviewPage({
             <MessageCircle size={17} aria-hidden="true" />
             Editar carrito
           </button>
-          <p className="text-center text-xs leading-5 text-slate-500">
+          <p className="text-center text-xs font-medium leading-5 text-brand-700/65">
             Si WhatsApp no abre, usa el resumen copiado y escribe al {business.whatsappNumber}.
           </p>
         </div>
@@ -142,9 +142,9 @@ export function ReviewPage({
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="grid gap-1 rounded-lg bg-slate-50 p-3 sm:grid-cols-[120px_minmax(0,1fr)]">
-      <dt className="font-bold text-slate-600">{label}</dt>
-      <dd className="break-words text-slate-950">{value}</dd>
+    <div className="grid gap-1 rounded-lg bg-cream p-3 sm:grid-cols-[120px_minmax(0,1fr)]">
+      <dt className="font-black text-brand-700">{label}</dt>
+      <dd className="break-words font-medium text-brand-900">{value}</dd>
     </div>
   )
 }

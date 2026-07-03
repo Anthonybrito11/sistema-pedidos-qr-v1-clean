@@ -11,18 +11,18 @@ interface CartItemRowProps {
 
 export function CartItemRow({ item, onUpdateQty, onRemove }: CartItemRowProps) {
   return (
-    <div className="grid grid-cols-[64px_minmax(0,1fr)] gap-3 border-b border-slate-100 py-4 last:border-b-0">
+    <div className="grid grid-cols-[72px_minmax(0,1fr)] gap-3 border-b border-brand-700/10 py-4 last:border-b-0">
       <img
         src={item.image}
         alt={item.name}
-        className="h-16 w-16 rounded-lg object-cover"
+        className="h-[72px] w-[72px] aspect-square rounded-lg object-cover shadow-sm"
         loading="lazy"
       />
       <div className="min-w-0">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <p className="font-bold leading-5 text-slate-950">{item.name}</p>
-            <p className="mt-1 text-sm font-semibold text-slate-600">
+            <p className="font-black leading-5 text-brand-900">{item.name}</p>
+            <p className="mt-1 text-sm font-bold text-brand-700/75">
               {formatCurrency(item.price * item.quantity)}
             </p>
           </div>

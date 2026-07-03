@@ -32,12 +32,12 @@ export function DeliveryForm({
   const needsAddress = mode === 'delivery'
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4">
+    <div className="surface-card p-4 sm:p-5">
       <div>
-        <p className="text-sm font-semibold text-brand-700">
+        <p className="section-kicker">
           {needsAddress ? 'Datos delivery' : 'Datos pickup'}
         </p>
-        <h2 className="mt-1 text-xl font-black text-slate-950">
+        <h2 className="mt-1 text-xl font-black text-brand-900">
           {needsAddress ? 'Datos para entregar' : 'Datos para recoger'}
         </h2>
       </div>
@@ -95,7 +95,7 @@ export function DeliveryForm({
               {location ? (
                 <a
                   href={location.mapsUrl}
-                  className="mt-2 inline-flex text-sm font-semibold text-brand-700"
+                  className="mt-2 inline-flex text-sm font-bold text-mint underline-offset-4 hover:underline"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -103,7 +103,7 @@ export function DeliveryForm({
                 </a>
               ) : null}
               {locationMessage ? (
-                <p className="mt-2 text-sm leading-5 text-slate-600">{locationMessage}</p>
+                <p className="mt-2 text-sm font-medium leading-5 text-brand-700/75">{locationMessage}</p>
               ) : null}
             </div>
           </>
@@ -165,7 +165,7 @@ function Field({
         placeholder={placeholder}
         inputMode={inputMode}
       />
-      {error ? <p className="mt-2 text-sm font-semibold text-red-600">{error}</p> : null}
+      {error ? <p className="mt-2 text-sm font-bold text-tomato">{error}</p> : null}
     </div>
   )
 }

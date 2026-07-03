@@ -31,15 +31,16 @@ export function CartDrawer({
     <div className="fixed inset-0 z-40" role="dialog" aria-modal="true" aria-label="Carrito">
       <button
         type="button"
-        className="absolute inset-0 bg-slate-950/40"
+        className="absolute inset-0 bg-brand-900/55 backdrop-blur-[2px]"
         onClick={onClose}
         aria-label="Cerrar carrito"
       />
 
-      <aside className="absolute inset-x-0 bottom-0 ml-auto flex max-h-[86vh] flex-col rounded-t-lg bg-white shadow-soft md:inset-y-0 md:right-0 md:h-full md:max-h-none md:w-[420px] md:rounded-l-lg md:rounded-tr-none">
-        <div className="flex items-center justify-between border-b border-slate-200 p-4">
+      <aside className="absolute inset-x-0 bottom-0 ml-auto flex max-h-[88vh] flex-col rounded-t-lg bg-paper shadow-soft md:inset-y-0 md:right-0 md:h-full md:max-h-none md:w-[440px] md:rounded-l-lg md:rounded-tr-none">
+        <div className="flex items-center justify-between border-b border-brand-700/10 p-4">
           <div>
-            <h2 className="text-xl font-black text-slate-950">Verificar pedido</h2>
+            <p className="section-kicker">Carrito</p>
+            <h2 className="mt-1 text-xl font-black text-brand-900">Verificar pedido</h2>
           </div>
           <button
             type="button"
@@ -77,10 +78,10 @@ export function CartDrawer({
           )}
         </div>
 
-        <div className="border-t border-slate-200 p-4">
+        <div className="border-t border-brand-700/10 bg-cream/55 p-4">
           <div className="mb-4 flex items-center justify-between text-sm">
-            <span className="font-semibold text-slate-600">Subtotal</span>
-            <span className="text-lg font-black text-slate-950">
+            <span className="font-bold text-brand-700/75">Subtotal</span>
+            <span className="text-lg font-black text-brand-900">
               {formatCurrency(subtotal)}
             </span>
           </div>

@@ -6,23 +6,25 @@ interface ProductCardProps {
   product: Product
   quantity: number
   onAdd: (product: Product) => void
+  index?: number
 }
 
-export function ProductCard({ product, quantity, onAdd }: ProductCardProps) {
+export function ProductCard({ product, quantity, onAdd, index = 0 }: ProductCardProps) {
   return (
     <article
-      className="grid grid-cols-[104px_minmax(0,1fr)] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm sm:grid-cols-[140px_minmax(0,1fr)]"
+      className="surface-card grid grid-cols-[118px_minmax(0,1fr)] overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-soft sm:grid-cols-[168px_minmax(0,1fr)]"
       data-testid={`product-${product.id}`}
+      style={{ animation: `productIn 360ms ease both ${Math.min(index * 45, 240)}ms` }}
     >
-      <div className="relative min-h-32 bg-slate-100">
+      <div className="relative min-h-36 bg-cream sm:min-h-44">
         <img
           src={product.image}
           alt={product.name}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover transition duration-500 hover:scale-105"
           loading="lazy"
         />
         {!product.available ? (
-          <span className="absolute left-2 top-2 rounded-lg bg-slate-950 px-2 py-1 text-xs font-bold text-white">
+          <span className="absolute left-2 top-2 rounded-lg bg-brand-900 px-2 py-1 text-xs font-black text-white shadow-sm">
             Agotado
           </span>
         ) : null}
@@ -31,25 +33,25 @@ export function ProductCard({ product, quantity, onAdd }: ProductCardProps) {
       <div className="flex min-w-0 flex-col gap-3 p-4">
         <div className="min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="text-base font-bold leading-5 text-slate-950">{product.name}</h3>
+            <h3 className="text-base font-black leading-5 text-brand-900">{product.name}</h3>
             {product.featured ? (
-              <span className="shrink-0 rounded-lg bg-tomato/10 px-2 py-1 text-[11px] font-bold text-tomato">
+              <span className="shrink-0 rounded-lg bg-sunshine px-2 py-1 text-[11px] font-black text-brand-900">
                 Popular
               </span>
             ) : null}
           </div>
-          <p className="mt-1 line-clamp-2 text-sm leading-5 text-slate-600">
+          <p className="mt-1 line-clamp-2 text-sm font-medium leading-5 text-brand-700/75">
             {product.description}
           </p>
         </div>
 
         <div className="mt-auto flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-base font-black text-slate-950">
+            <p className="text-lg font-black text-brand-900">
               {formatCurrency(product.price)}
             </p>
             {quantity > 0 ? (
-              <p className="text-xs font-semibold text-brand-700">{quantity} en carrito</p>
+              <p className="text-xs font-black text-mint">{quantity} en carrito</p>
             ) : null}
           </div>
 

@@ -18,7 +18,7 @@ export function Header({
   onHome,
 }: HeaderProps) {
   return (
-    <header className=" sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-brand-700/10 bg-paper/95 backdrop-blur">
       <div className="content-wrap flex min-h-16 items-center justify-between gap-3 py-3">
         <button
           type="button"
@@ -26,13 +26,13 @@ export function Header({
           onClick={onHome}
           aria-label="Volver al menu"
         >
-          <h1 className='text-base font-bold text-slate-950'>{businessName}</h1>
-          <p className='text-xs font-medium text-slate-500'>{tagline}</p>
+          <h1 className="truncate text-base font-black text-brand-900">{businessName}</h1>
+          <p className="truncate text-xs font-semibold text-brand-700/70">{tagline}</p>
         </button>
 
         <div className="flex items-center gap-2">
           {tableNumber ? (
-            <span className="hidden min-h-9 items-center gap-1 rounded-lg bg-brand-50 px-3 text-xs font-bold text-brand-700 sm:inline-flex">
+            <span className="hidden min-h-9 items-center gap-1 rounded-lg bg-cream px-3 text-xs font-black text-brand-700 shadow-sm sm:inline-flex">
               <MapPin size={15} aria-hidden="true" />
               Mesa {tableNumber}
             </span>
@@ -48,7 +48,7 @@ export function Header({
           >
             <ShoppingCart size={20} aria-hidden="true" />
             {cartCount > 0 ? (
-              <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-tomato px-1 text-[11px] font-bold text-white">
+              <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-tomato px-1 text-[11px] font-black text-white ring-2 ring-paper">
                 {cartCount}
               </span>
             ) : null}

@@ -1,7 +1,7 @@
 import type { BusinessConfig } from '../types'
 
 export const businessConfig: BusinessConfig = {
-  name: 'Cuki Yun Yun',
+  name: 'Cuki YunYun',
   tagline: 'Cafetería - Coffe & Food',
   whatsappNumber: '18097526222',
   address: 'Plaza Velero, Veron Punta Cana, República Dominicana',

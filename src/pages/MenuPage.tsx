@@ -44,7 +44,10 @@ const filteredProducts = selectedCategory === 'all'
           
           {/* Logo Placeholder */}
           <div className="mb-4 flex h-52 w-52 items-center justify-center  text-slate-400 font-bold text-xs uppercase tracking-wider select-none" aria-hidden="true">
-          <img src="/Images/LogoEjemploCuki.png" alt="logo cuki yun yun" />
+          <img
+              src={`${import.meta.env.BASE_URL}Images/LogoEjemploCuki.png`}
+              alt="logo cuki yun yun"
+            />
           </div>
 
           <h1 className="text-2xl font-black text-slate-950">Tu antojo favorito comienza aquí ✨</h1>

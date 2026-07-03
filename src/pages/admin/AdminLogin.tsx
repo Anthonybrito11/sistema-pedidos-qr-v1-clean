@@ -7,7 +7,7 @@ export function AdminLogin() {
   const { user, signIn, loading, configError } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
-  const [email, setEmail] = useState('anthonyjuniorbritoabreu11@gmail.com')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -41,9 +41,9 @@ export function AdminLogin() {
         <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-brand-700 text-white">
           <Lock size={20} aria-hidden="true" />
         </span>
-        <h1 className="mt-4 text-2xl font-black text-slate-950">Entrar al admin</h1>
+        <h1 className="mt-4 text-2xl font-black text-slate-950">Bienvenid@!</h1>
         <p className="mt-2 text-sm leading-6 text-slate-600">
-          Usa el usuario administrador creado en Supabase Auth.
+          Inicia sesion con tus credenciales para continuar.
         </p>
 
         <div className="mt-5 grid gap-4">

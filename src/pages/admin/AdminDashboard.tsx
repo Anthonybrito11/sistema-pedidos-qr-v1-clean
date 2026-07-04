@@ -42,11 +42,11 @@ export function AdminDashboard() {
         <h1 className="text-3xl font-black">Dashboard</h1>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <Stat label="Total productos" value={products.length} />
-        <Stat label="Productos activos" value={products.filter((product) => product.is_active).length} />
-        <Stat label="No disponibles" value={products.filter((product) => !product.is_available).length} />
-        <Stat label="Categorias" value={categories.length} />
-        <Stat label="Pedidos pendientes" value={pendingOrders.length} />
+        <Stat label="Total de productos agregados" value={products.length} />
+        <Stat label="Productos activos en el menu" value={products.filter((product) => product.is_active).length} />
+        <Stat label="Productos no disponibles en el menu" value={products.filter((product) => !product.is_available).length} />
+        <Stat label="Total de categorias agregadas" value={categories.length} />
+        <Stat label="Total de pedidos pendientes" value={pendingOrders.length} />
       </div>
       <section className="rounded-lg border border-slate-200 bg-white p-4">
         <h2 className="text-xl font-black">Pedidos recientes</h2>

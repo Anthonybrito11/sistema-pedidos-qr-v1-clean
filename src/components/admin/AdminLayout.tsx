@@ -55,7 +55,7 @@ export function AdminLayout() {
         <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
           <div className="flex min-h-16 items-center justify-between gap-3 px-4 lg:px-8">
             <div>
-              <p className="text-sm font-black">Panel Admin</p>
+              <p className="text-sm font-black">Panel de producción</p>
               <p className="text-xs text-slate-500">{user?.email}</p>
             </div>
             <button type="button" className="secondary-button" onClick={() => void signOut()}>

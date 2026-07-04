@@ -26,8 +26,8 @@ export function AdminLayout() {
     <div className="min-h-screen bg-slate-50 text-slate-950">
       <aside className="fixed inset-y-0 left-0 hidden w-64 border-r border-slate-200 bg-white p-4 lg:block">
         <div className="mb-6">
-          <p className="text-xs font-bold uppercase text-brand-700">Panel admin</p>
-          <h1 className="text-xl font-black">Menu QR</h1>
+          <p className="text-xs font-bold uppercase text-brand-700">Panel de administración</p>
+          <h1 className="text-xl font-black">Cuki Yun Yun</h1>
         </div>
         <nav className="space-y-2">
           {navItems.map((item) => {
@@ -57,7 +57,7 @@ export function AdminLayout() {
         <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
           <div className="flex min-h-16 items-center justify-between gap-3 px-4 lg:px-8">
             <div>
-              <p className="text-sm font-black">Panel de producción</p>
+              <p className="text-sm font-black">Bienvenid@!</p>
               <p className="text-xs text-slate-500">{user?.email}</p>
             </div>
             <button type="button" className="secondary-button" onClick={() => void signOut()}>

@@ -58,13 +58,26 @@ export function AdminReports() {
     setError('')
 
     try {
-      const deletedCount = await deleteOldClosedOrders(HISTORY_DAYS)
+      const { deletedCount, matchedCount } = await deleteOldClosedOrders(HISTORY_DAYS)
 
-      setMessage(
-        deletedCount > 0
-          ? `Se eliminaron ${deletedCount} pedidos antiguos.`
-          : 'No habia pedidos antiguos completados o cancelados para borrar.',
-      )
+      if (matchedCount === 0) {
+        setMessage('No habia pedidos antiguos completados o cancelados para borrar.')
+        return
+      }
+
+      if (deletedCount === 0) {
+        setError(
+          `Se encontraron ${matchedCount} pedidos elegibles, pero Supabase no permitio borrarlos. Revisa que tu usuario este en admin_users y que la policy DELETE use public.is_admin().`,
+        )
+        return
+      }
+
+      if (deletedCount < matchedCount) {
+        setError(`Solo se eliminaron ${deletedCount} de ${matchedCount} pedidos elegibles.`)
+        return
+      }
+
+      setMessage(`Se eliminaron ${deletedCount} pedidos antiguos.`)
     } catch (currentError) {
       setError(currentError instanceof Error ? currentError.message : 'No se pudo borrar el historial.')
     } finally {
@@ -111,7 +124,7 @@ export function AdminReports() {
           <h2 className="text-xl font-black text-red-950">Borrar historial antiguo</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">
             Elimina pedidos completados o cancelados anteriores al {cutoffLabel}. No elimina
-            pedidos activos.
+            pedidos activos ni pedidos de los ultimos 31 dias.
           </p>
           <button
             type="button"

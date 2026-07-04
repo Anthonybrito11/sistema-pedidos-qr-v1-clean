@@ -145,19 +145,26 @@ export async function deleteOldClosedOrders(days = 31) {
   const orderIds = oldOrders.map((order) => order.id)
 
   if (orderIds.length === 0) {
-    return 0
+    return {
+      matchedCount: 0,
+      deletedCount: 0,
+    }
   }
 
-  const { error: deleteError } = await supabase
+  const { data: deletedOrders, error: deleteError } = await supabase
     .from('orders')
     .delete()
     .in('id', orderIds)
+    .select('id')
 
   if (deleteError) {
     throw deleteError
   }
 
-  return orderIds.length
+  return {
+    matchedCount: orderIds.length,
+    deletedCount: deletedOrders.length,
+  }
 }
 
 export async function updateOrderStatus(orderId: string, status: OrderStatus) {

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { getAdminOrders, updateOrderStatus } from '../../services/ordersService'
 import type { OrderStatus, OrderWithItems } from '../../types/supabase'
 import { formatCurrency } from '../../utils/currency'
+import { getOrderStatusLabel, getOrderStatusSelectClass } from '../../utils/orderStatus'
 
 const ORDERS_REFRESH_INTERVAL_MS = 30000
 const ORDERS_LIMIT = 50
@@ -93,12 +94,12 @@ export function AdminOrders() {
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <select
-                  className="field-input min-w-44"
+                  className={`${getOrderStatusSelectClass(order.status)} min-w-44`}
                   value={order.status}
                   onChange={(event) => void changeStatus(order.id, event.target.value as OrderStatus)}
                 >
                   {statuses.map((status) => (
-                    <option key={status} value={status}>{status}</option>
+                    <option key={status} value={status}>{getOrderStatusLabel(status)}</option>
                   ))}
                 </select>
                 <span className="rounded-lg bg-slate-100 px-3 py-2 text-sm font-bold text-slate-700">

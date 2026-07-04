@@ -107,7 +107,7 @@ export function AdminReports() {
         <article className="rounded-lg border border-slate-200 bg-white p-4">
           <h2 className="text-xl font-black">Exportar historial</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Descarga un CSV con los pedidos creados durante los ultimos 31 dias.
+            Descarga un archivo excel con los pedidos creados durante los ultimos 31 dias.
           </p>
           <button
             type="button"

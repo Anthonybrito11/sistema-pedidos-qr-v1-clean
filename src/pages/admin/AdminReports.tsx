@@ -35,8 +35,8 @@ export function AdminReports() {
         return
       }
 
-      downloadCsv(orders)
-      setMessage(`CSV generado con ${orders.length} pedidos.`)
+      downloadExcelFile(orders)
+      setMessage(`Archivo generado con ${orders.length} pedidos.`)
     } catch (currentError) {
       setError(currentError instanceof Error ? currentError.message : 'No se pudo exportar el CSV.')
     } finally {
@@ -141,61 +141,103 @@ export function AdminReports() {
   )
 }
 
-function downloadCsv(orders: OrderWithItems[]) {
-  const csv = buildOrdersCsv(orders)
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+function downloadExcelFile(orders: OrderWithItems[]) {
+  const table = buildOrdersTable(orders)
+  const blob = new Blob([table], { type: 'application/vnd.ms-excel;charset=utf-8;' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   const date = new Date().toISOString().slice(0, 10)
 
   link.href = url
-  link.download = `pedidos-ultimos-31-dias-${date}.csv`
+  link.download = `pedidos-ultimos-31-dias-${date}.xls`
   document.body.appendChild(link)
   link.click()
   link.remove()
   URL.revokeObjectURL(url)
 }
 
-function buildOrdersCsv(orders: OrderWithItems[]) {
+function buildOrdersTable(orders: OrderWithItems[]) {
   const headers = [
-    'codigo',
-    'fecha',
-    'estado',
-    'tipo',
-    'cliente',
-    'telefono',
-    'direccion',
-    'pago',
-    'subtotal',
-    'delivery',
-    'total',
-    'productos',
+    'Codigo',
+    'Fecha',
+    'Estado',
+    'Tipo de pedido',
+    'Cliente',
+    'Telefono',
+    'Direccion',
+    'Metodo de pago',
+    'Subtotal',
+    'Delivery',
+    'Total',
+    'Productos',
   ]
 
   const rows = orders.map((order) => [
     order.order_code,
-    new Date(order.created_at).toLocaleString('es-DO'),
-    order.status,
-    order.order_type,
+    formatExportDate(order.created_at),
+    formatOrderStatus(order.status),
+    formatOrderType(order.order_type),
     order.customer_name,
     order.customer_phone || '',
     order.customer_address || '',
-    order.payment_method,
+    formatPaymentMethod(order.payment_method),
     formatCurrency(Number(order.subtotal)),
     formatCurrency(Number(order.delivery_cost)),
     formatCurrency(Number(order.total)),
     formatOrderItems(order),
   ])
 
-  return [headers, ...rows].map((row) => row.map(escapeCsvValue).join(',')).join('\r\n')
+  return `\ufeff${[headers, ...rows].map((row) => row.map(escapeTableValue).join('\t')).join('\r\n')}`
 }
 
 function formatOrderItems(order: OrderWithItems) {
   return (order.order_items || [])
-    .map((item) => `${item.quantity}x ${item.product_name} (${formatCurrency(Number(item.line_total))})`)
-    .join(' | ')
+    .map((item) => `${item.quantity} x ${item.product_name} - ${formatCurrency(Number(item.line_total))}`)
+    .join(' / ')
 }
 
-function escapeCsvValue(value: string) {
-  return `"${value.replace(/"/g, '""')}"`
+function formatExportDate(value: string) {
+  return new Date(value).toLocaleString('es-DO', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+function formatOrderStatus(status: OrderWithItems['status']) {
+  const labels: Record<OrderWithItems['status'], string> = {
+    pending_whatsapp: 'Pendiente WhatsApp',
+    confirmed: 'Confirmado',
+    preparing: 'Preparando',
+    completed: 'Completado',
+    cancelled: 'Cancelado',
+  }
+
+  return labels[status]
+}
+
+function formatOrderType(orderType: OrderWithItems['order_type']) {
+  const labels: Record<OrderWithItems['order_type'], string> = {
+    delivery: 'Delivery',
+    pickup: 'Pickup',
+    table: 'Mesa',
+  }
+
+  return labels[orderType]
+}
+
+function formatPaymentMethod(paymentMethod: OrderWithItems['payment_method']) {
+  const labels: Record<OrderWithItems['payment_method'], string> = {
+    cash: 'Efectivo',
+    card: 'Tarjeta',
+    transfer: 'Transferencia',
+  }
+
+  return labels[paymentMethod]
+}
+
+function escapeTableValue(value: string) {
+  return value.replace(/\t/g, ' ').replace(/\r?\n/g, ' ').trim()
 }

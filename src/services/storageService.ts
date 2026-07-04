@@ -2,6 +2,7 @@ import { supabase } from '../lib/supabaseClient'
 
 const IMAGE_BUCKET = 'products'
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024
 
 function slugifyFileName(value: string) {
   return value
@@ -13,6 +14,10 @@ function slugifyFileName(value: string) {
 export function validateImageFile(file: File) {
   if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
     throw new Error('Solo se permiten imagenes jpg, jpeg, png o webp.')
+  }
+
+  if (file.size > MAX_IMAGE_SIZE_BYTES) {
+    throw new Error('La imagen debe pesar 5 MB o menos.')
   }
 }
 

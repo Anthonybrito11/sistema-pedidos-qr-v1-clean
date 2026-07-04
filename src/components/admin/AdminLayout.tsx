@@ -1,6 +1,7 @@
 import {
   BarChart3,
   FolderTree,
+  FileText,
   LogOut,
   Package,
   ReceiptText,
@@ -14,6 +15,7 @@ const navItems = [
   { to: '/admin/products', label: 'Productos', icon: Package },
   { to: '/admin/categories', label: 'Categorias', icon: FolderTree },
   { to: '/admin/orders', label: 'Pedidos', icon: ReceiptText },
+  { to: '/admin/reports', label: 'Reportes', icon: FileText },
   { to: '/admin/settings', label: 'Config', icon: Settings },
 ]
 

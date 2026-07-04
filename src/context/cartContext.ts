@@ -9,6 +9,7 @@ export interface CartContextValue {
   updateQuantity: (productId: string, quantity: number) => void
   removeItem: (productId: string) => void
   clearCart: () => void
+  syncCartWithProducts: (products: Product[]) => void
   getItemQuantity: (productId: string) => number
 }
 

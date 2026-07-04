@@ -1,6 +1,7 @@
 import { Plus, ShoppingBag } from 'lucide-react'
 import type { Product } from '../types'
 import { formatCurrency } from '../utils/currency'
+import { fallbackImageSrc, handleImageFallback } from '../utils/images'
 
 interface ProductCardProps {
   product: Product
@@ -18,10 +19,11 @@ export function ProductCard({ product, quantity, onAdd, index = 0 }: ProductCard
     >
       <div className="relative min-h-36 bg-cream sm:min-h-44">
         <img
-          src={product.image}
+          src={product.image || fallbackImageSrc}
           alt={product.name}
           className="h-full w-full object-cover transition duration-500 hover:scale-105"
           loading="lazy"
+          onError={handleImageFallback}
         />
         {!product.available ? (
           <span className="absolute left-2 top-2 rounded-lg bg-brand-900 px-2 py-1 text-xs font-black text-white shadow-sm">

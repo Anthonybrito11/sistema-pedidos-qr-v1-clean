@@ -3,11 +3,32 @@ import type { OrderPayload } from '../types'
 import type { OrderStatus, OrderWithItems } from '../types/supabase'
 import { getActiveBusinessSettings } from './businessService'
 
+const CLOSED_ORDER_STATUSES: OrderStatus[] = ['completed', 'cancelled']
+
+export function getOrdersCutoffDate(days = 31) {
+  const cutoffDate = new Date()
+  cutoffDate.setDate(cutoffDate.getDate() - days)
+  return cutoffDate
+}
+
 export function generateOrderCode() {
   const now = new Date()
   const date = now.toISOString().slice(0, 10).replace(/-/g, '')
   const suffix = Math.random().toString(36).slice(2, 6).toUpperCase()
   return `QR-${date}-${suffix}`
+}
+
+function generateOrderId() {
+  if (crypto.randomUUID) {
+    return crypto.randomUUID()
+  }
+
+  return '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (character) =>
+    (
+      Number(character) ^
+      (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (Number(character) / 4)))
+    ).toString(16),
+  )
 }
 
 export async function createOrder(order: OrderPayload) {
@@ -16,14 +37,16 @@ export async function createOrder(order: OrderPayload) {
   }
 
   const business = await getActiveBusinessSettings()
+  const orderId = generateOrderId()
   const orderCode = generateOrderCode()
   const customerName =
     order.customerInfo.name.trim() ||
     (order.orderType === 'table' ? `Mesa ${order.tableNumber}` : 'Cliente')
 
-  const { data: createdOrder, error: orderError } = await supabase
+  const { error: orderError } = await supabase
     .from('orders')
     .insert({
+      id: orderId,
       business_id: business?.id || null,
       order_code: orderCode,
       order_type: order.orderType,
@@ -40,15 +63,13 @@ export async function createOrder(order: OrderPayload) {
       status: 'pending_whatsapp',
       whatsapp_sent: false,
     })
-    .select('*')
-    .single()
 
   if (orderError) {
     throw orderError
   }
 
   const items = order.items.map((item) => ({
-    order_id: createdOrder.id,
+    order_id: orderId,
     product_id: isUuid(item.productId) ? item.productId : null,
     product_name: item.name,
     unit_price: item.price,
@@ -63,12 +84,12 @@ export async function createOrder(order: OrderPayload) {
   }
 
   return {
-    id: createdOrder.id,
-    orderCode: createdOrder.order_code,
+    id: orderId,
+    orderCode,
   }
 }
 
-export async function getAdminOrders(): Promise<OrderWithItems[]> {
+export async function getAdminOrders(limit = 50): Promise<OrderWithItems[]> {
   if (!supabase) {
     throw new Error('Supabase no esta configurado.')
   }
@@ -77,12 +98,66 @@ export async function getAdminOrders(): Promise<OrderWithItems[]> {
     .from('orders')
     .select('*, order_items(*)')
     .order('created_at', { ascending: false })
+    .limit(limit)
 
   if (error) {
     throw error
   }
 
   return data
+}
+
+export async function getOrdersForCsv(days = 31): Promise<OrderWithItems[]> {
+  if (!supabase) {
+    throw new Error('Supabase no esta configurado.')
+  }
+
+  const cutoffDate = getOrdersCutoffDate(days)
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*, order_items(*)')
+    .gte('created_at', cutoffDate.toISOString())
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
+export async function deleteOldClosedOrders(days = 31) {
+  if (!supabase) {
+    throw new Error('Supabase no esta configurado.')
+  }
+
+  const cutoffDate = getOrdersCutoffDate(days)
+  const { data: oldOrders, error: selectError } = await supabase
+    .from('orders')
+    .select('id')
+    .lt('created_at', cutoffDate.toISOString())
+    .in('status', CLOSED_ORDER_STATUSES)
+
+  if (selectError) {
+    throw selectError
+  }
+
+  const orderIds = oldOrders.map((order) => order.id)
+
+  if (orderIds.length === 0) {
+    return 0
+  }
+
+  const { error: deleteError } = await supabase
+    .from('orders')
+    .delete()
+    .in('id', orderIds)
+
+  if (deleteError) {
+    throw deleteError
+  }
+
+  return orderIds.length
 }
 
 export async function updateOrderStatus(orderId: string, status: OrderStatus) {

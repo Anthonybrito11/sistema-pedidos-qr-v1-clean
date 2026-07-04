@@ -1,8 +1,11 @@
 import { RefreshCw } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { getAdminOrders, updateOrderStatus } from '../../services/ordersService'
 import type { OrderStatus, OrderWithItems } from '../../types/supabase'
 import { formatCurrency } from '../../utils/currency'
+
+const ORDERS_REFRESH_INTERVAL_MS = 30000
+const ORDERS_LIMIT = 50
 
 const statuses: OrderStatus[] = [
   'pending_whatsapp',
@@ -15,27 +18,50 @@ const statuses: OrderStatus[] = [
 export function AdminOrders() {
   const [orders, setOrders] = useState<OrderWithItems[]>([])
   const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [error, setError] = useState('')
 
-  async function loadOrders() {
-    setLoading(true)
+  const loadOrders = useCallback(async (silent = false) => {
+    if (silent) {
+      setRefreshing(true)
+    } else {
+      setLoading(true)
+    }
     setError('')
     try {
-      setOrders(await getAdminOrders())
+      setOrders(await getAdminOrders(ORDERS_LIMIT))
+      setLastUpdated(new Date())
     } catch (currentError) {
       setError(currentError instanceof Error ? currentError.message : 'No se pudieron cargar pedidos.')
     } finally {
-      setLoading(false)
+      if (silent) {
+        setRefreshing(false)
+      } else {
+        setLoading(false)
+      }
     }
-  }
+  }, [])
 
   useEffect(() => {
     void loadOrders()
-  }, [])
+  }, [loadOrders])
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      if (document.hidden) {
+        return
+      }
+
+      void loadOrders(true)
+    }, ORDERS_REFRESH_INTERVAL_MS)
+
+    return () => window.clearInterval(intervalId)
+  }, [loadOrders])
 
   async function changeStatus(orderId: string, status: OrderStatus) {
     await updateOrderStatus(orderId, status)
-    await loadOrders()
+    await loadOrders(true)
   }
 
   return (
@@ -44,10 +70,14 @@ export function AdminOrders() {
         <div>
           <p className="text-sm font-bold text-brand-700">Ventas</p>
           <h1 className="text-3xl font-black">Pedidos</h1>
+          <p className="mt-1 text-xs font-semibold text-slate-500">
+            {lastUpdated ? `Actualizado a las ${formatUpdatedAt(lastUpdated)}.` : 'Cargando pedidos.'}
+            {' '}Auto-actualizacion cada 30s.
+          </p>
         </div>
-        <button type="button" className="secondary-button" onClick={() => void loadOrders()}>
+        <button type="button" className="secondary-button" onClick={() => void loadOrders()} disabled={loading || refreshing}>
           <RefreshCw size={17} aria-hidden="true" />
-          Actualizar
+          {refreshing ? 'Actualizando...' : 'Actualizar'}
         </button>
       </div>
       {error ? <p className="mb-4 rounded-lg bg-red-50 p-3 text-sm font-semibold text-red-700">{error}</p> : null}
@@ -98,4 +128,12 @@ export function AdminOrders() {
       </div>
     </section>
   )
+}
+
+function formatUpdatedAt(date: Date) {
+  return date.toLocaleTimeString('es-DO', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  })
 }

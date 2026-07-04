@@ -11,6 +11,7 @@ import {
 } from '../../services/productsService'
 import type { DbCategory, DbProduct, ProductFormValues } from '../../types/supabase'
 import { formatCurrency } from '../../utils/currency'
+import { fallbackImageSrc, handleImageFallback } from '../../utils/images'
 
 const emptyForm: ProductFormValues = {
   name: '',
@@ -121,7 +122,12 @@ export function AdminProducts() {
           {loading ? <p className="p-4 text-sm text-slate-500">Cargando...</p> : null}
           {products.map((product) => (
             <div key={product.id} className="grid gap-3 border-b border-slate-100 p-4 last:border-b-0 lg:grid-cols-[72px_1fr_120px_210px]">
-              <img src={product.image_url || '/favicon.svg'} alt="" className="h-16 w-16 rounded-lg object-cover" />
+              <img
+                src={product.image_url || fallbackImageSrc}
+                alt=""
+                className="h-16 w-16 rounded-lg object-cover"
+                onError={handleImageFallback}
+              />
               <div>
                 <p className="font-black">{product.name}</p>
                 <p className="line-clamp-2 text-sm text-slate-500">{product.description || 'Sin descripcion'}</p>

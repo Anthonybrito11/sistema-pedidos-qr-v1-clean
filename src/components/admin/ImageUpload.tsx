@@ -1,6 +1,7 @@
 import { ImageUp } from 'lucide-react'
 import { useState } from 'react'
 import { uploadImage } from '../../services/storageService'
+import { handleImageFallback } from '../../utils/images'
 
 interface ImageUploadProps {
   label: string
@@ -37,7 +38,7 @@ export function ImageUpload({ label, folder, value, onChange }: ImageUploadProps
       <div className="mt-2 grid gap-3 sm:grid-cols-[96px_minmax(0,1fr)]">
         <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
           {value ? (
-            <img src={value} alt="" className="h-full w-full object-cover" />
+            <img src={value} alt="" className="h-full w-full object-cover" onError={handleImageFallback} />
           ) : (
             <ImageUp className="text-slate-400" size={24} aria-hidden="true" />
           )}

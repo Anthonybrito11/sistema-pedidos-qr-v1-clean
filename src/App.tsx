@@ -11,7 +11,7 @@ import { MenuPage } from './pages/MenuPage'
 import { ReviewPage } from './pages/ReviewPage'
 import { getBusinessConfigWithFallback } from './services/businessService'
 import { getPublicCategoriesWithFallback } from './services/categoriesService'
-import { createOrder, markOrderWhatsAppSent } from './services/ordersService'
+import { createOrder } from './services/ordersService'
 import { getPublicProductsWithFallback } from './services/productsService'
 import type {
   CustomerInfo,
@@ -47,6 +47,7 @@ function App() {
     updateQuantity,
     removeItem,
     clearCart,
+    syncCartWithProducts,
     getItemQuantity,
   } = useCart()
 
@@ -111,6 +112,14 @@ function App() {
       isMounted = false
     }
   }, [])
+
+  useEffect(() => {
+    if (menuStatus !== 'ready') {
+      return
+    }
+
+    syncCartWithProducts(menuProducts)
+  }, [menuProducts, menuStatus, syncCartWithProducts])
 
   const currentOrder = useMemo(
     () =>
@@ -251,7 +260,6 @@ function App() {
         orderCode: createdOrder.orderCode,
         persistedOrderId: createdOrder.id,
       }
-      await markOrderWhatsAppSent(createdOrder.id)
     } catch {
       setOrderSubmitError('No se pudo registrar el pedido en Supabase. Puedes continuar por WhatsApp, pero revisa la conexion luego.')
     } finally {

@@ -1,6 +1,7 @@
 import { Trash2 } from 'lucide-react'
 import type { CartItem } from '../types'
 import { formatCurrency } from '../utils/currency'
+import { fallbackImageSrc, handleImageFallback } from '../utils/images'
 import { QuantityStepper } from './QuantityStepper'
 
 interface CartItemRowProps {
@@ -13,10 +14,11 @@ export function CartItemRow({ item, onUpdateQty, onRemove }: CartItemRowProps) {
   return (
     <div className="grid grid-cols-[72px_minmax(0,1fr)] gap-3 border-b border-brand-700/10 py-4 last:border-b-0">
       <img
-        src={item.image}
+        src={item.image || fallbackImageSrc}
         alt={item.name}
         className="h-[72px] w-[72px] aspect-square rounded-lg object-cover shadow-sm"
         loading="lazy"
+        onError={handleImageFallback}
       />
       <div className="min-w-0">
         <div className="flex items-start justify-between gap-2">

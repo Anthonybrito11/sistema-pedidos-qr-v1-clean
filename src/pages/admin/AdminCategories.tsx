@@ -101,10 +101,10 @@ export function AdminCategories() {
               </div>
               <p className="text-sm font-bold text-slate-600">Orden {category.sort_order}</p>
               <div className="flex gap-2 md:justify-end">
-                <button type="button" className="icon-button" onClick={() => editCategory(category)} title="Editar">
+                <button type="button" className="icon-button" onClick={() => editCategory(category)} aria-label={`Editar ${category.name}`} title="Editar">
                   <Edit3 size={17} aria-hidden="true" />
                 </button>
-                <button type="button" className="icon-button" onClick={() => void toggleActive(category)} title="Cambiar estado">
+                <button type="button" className="icon-button" onClick={() => void toggleActive(category)} aria-label={`${category.is_active ? 'Desactivar' : 'Activar'} ${category.name}`} title="Cambiar estado">
                   {category.is_active ? <ToggleRight size={20} aria-hidden="true" /> : <ToggleLeft size={20} aria-hidden="true" />}
                 </button>
               </div>

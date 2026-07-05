@@ -8,7 +8,6 @@ interface MenuPageProps {
   products: Product[]
   menuStatus: MenuStatus
   selectedCategory: string
-  tableNumber: string
   onSelectCategory: (categoryId: string) => void
   onAddToCart: (product: Product) => void
   getQuantity: (productId: string) => number
@@ -24,7 +23,7 @@ export function MenuPage({
   getQuantity,
 }: MenuPageProps) {
   const selectedCategoryName =
-    categories.find((category) => category.id === selectedCategory)?.name ?? 'Menu'
+    categories.find((category) => category.id === selectedCategory)?.name ?? 'Menú'
   const filteredProducts = selectedCategory === 'all'
     ? products
     : products.filter((product) => product.category === selectedCategory)
@@ -36,18 +35,19 @@ export function MenuPage({
       <section className="relative overflow-hidden bg-brand-700 text-white">
         <div className="absolute inset-x-0 bottom-0 h-2 bg-[linear-gradient(90deg,#EA5749_0_25%,#2EB89D_25%_50%,#FBC017_50%_75%,#FBFBED_75%_100%)]" />
         <div className="content-wrap relative flex flex-col items-center px-5 pb-10 pt-8 text-center sm:pb-12">
-
-
-          <div className="mb-5 flex h-44 w-44 items-center justify-center rounded-full  sm:h-48 sm:w-48" aria-hidden="true">
+          <div className="mb-5 flex h-44 w-44 items-center justify-center rounded-full sm:h-48 sm:w-48">
             <img
-              src={`${import.meta.env.BASE_URL}Images/logoCuki2.png`}
-              alt="logo cuki yun yun"
+              src={`${import.meta.env.BASE_URL}Images/logoCuki2.webp`}
+              alt="Logo de Cuki YunYun"
               className="h-full w-full object-contain"
+              width="768"
+              height="768"
+              decoding="async"
+              fetchPriority="high"
             />
           </div>
 
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-sunshine">menú </p>
-
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-sunshine">Menú</p>
         </div>
       </section>
 
@@ -60,7 +60,7 @@ export function MenuPage({
       <main className="content-wrap pb-28 pt-6 md:pb-14">
         <div className="mb-5 flex items-end justify-between gap-3">
           <div>
-            <p className="section-kicker">Categoría </p>
+            <p className="section-kicker">Categoría</p>
             <h2 className="mt-1 text-2xl font-black text-brand-900 sm:text-3xl">{selectedCategoryName}</h2>
           </div>
           <p className="shrink-0 rounded-lg bg-paper px-3 py-2 text-xs font-black text-brand-700 shadow-sm">
@@ -69,7 +69,7 @@ export function MenuPage({
         </div>
 
         {menuStatus === 'loading' ? (
-          <div className="grid gap-4 md:grid-cols-2" aria-label="Cargando menu">
+          <div className="grid gap-4 md:grid-cols-2" aria-label="Cargando menú">
             {Array.from({ length: 4 }).map((_, index) => (
               <div key={index} className="surface-card grid grid-cols-[118px_minmax(0,1fr)] overflow-hidden sm:grid-cols-[168px_minmax(0,1fr)]">
                 <div className="skeleton-shimmer min-h-36 rounded-none" />
@@ -89,8 +89,8 @@ export function MenuPage({
 
         {menuStatus === 'error' ? (
           <EmptyState
-            title="No pudimos cargar el menu"
-            message="Intenta recargar la pagina o consulta al personal."
+            title="No pudimos cargar el menú"
+            message="Intenta recargar la página o consulta al personal."
           />
         ) : null}
 

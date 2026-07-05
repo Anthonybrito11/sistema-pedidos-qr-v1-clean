@@ -15,9 +15,12 @@ export function CartItemRow({ item, onUpdateQty, onRemove }: CartItemRowProps) {
     <div className="grid grid-cols-[72px_minmax(0,1fr)] gap-3 border-b border-brand-700/10 py-4 last:border-b-0">
       <img
         src={item.image || fallbackImageSrc}
-        alt={item.name}
+        alt={`Foto de ${item.name}`}
         className="h-[72px] w-[72px] aspect-square rounded-lg object-cover shadow-sm"
         loading="lazy"
+        decoding="async"
+        width="72"
+        height="72"
         onError={handleImageFallback}
       />
       <div className="min-w-0">

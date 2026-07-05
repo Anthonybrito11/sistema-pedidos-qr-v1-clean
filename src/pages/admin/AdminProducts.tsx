@@ -124,8 +124,12 @@ export function AdminProducts() {
             <div key={product.id} className="grid gap-3 border-b border-slate-100 p-4 last:border-b-0 lg:grid-cols-[72px_1fr_120px_210px]">
               <img
                 src={product.image_url || fallbackImageSrc}
-                alt=""
+                alt={`Foto de ${product.name}`}
                 className="h-16 w-16 rounded-lg object-cover"
+                loading="lazy"
+                decoding="async"
+                width="64"
+                height="64"
                 onError={handleImageFallback}
               />
               <div>
@@ -138,10 +142,10 @@ export function AdminProducts() {
                 <button type="button" className="secondary-button min-h-10 px-3 py-2 text-xs" onClick={() => void toggleAvailable(product)}>
                   {product.is_available ? 'Disponible' : 'Agotado'}
                 </button>
-                <button type="button" className="icon-button" onClick={() => editProduct(product)} title="Editar">
+                <button type="button" className="icon-button" onClick={() => editProduct(product)} aria-label={`Editar ${product.name}`} title="Editar">
                   <Edit3 size={17} aria-hidden="true" />
                 </button>
-                <button type="button" className="icon-button" onClick={() => void toggleActive(product)} title="Cambiar estado">
+                <button type="button" className="icon-button" onClick={() => void toggleActive(product)} aria-label={`${product.is_active ? 'Desactivar' : 'Activar'} ${product.name}`} title="Cambiar estado">
                   {product.is_active ? <ToggleRight size={20} aria-hidden="true" /> : <ToggleLeft size={20} aria-hidden="true" />}
                 </button>
               </div>

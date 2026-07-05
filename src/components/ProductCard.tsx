@@ -11,6 +11,8 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, quantity, onAdd, index = 0 }: ProductCardProps) {
+  const shouldPrioritizeImage = index < 2
+
   return (
     <article
       className="surface-card grid grid-cols-[118px_minmax(0,1fr)] overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-soft sm:grid-cols-[168px_minmax(0,1fr)]"
@@ -20,9 +22,13 @@ export function ProductCard({ product, quantity, onAdd, index = 0 }: ProductCard
       <div className="relative min-h-36 bg-cream sm:min-h-44">
         <img
           src={product.image || fallbackImageSrc}
-          alt={product.name}
+          alt={`Foto de ${product.name}`}
           className="h-full w-full object-cover transition duration-500 hover:scale-105"
-          loading="lazy"
+          loading={shouldPrioritizeImage ? 'eager' : 'lazy'}
+          decoding="async"
+          fetchPriority={shouldPrioritizeImage ? 'high' : 'auto'}
+          width="336"
+          height="288"
           onError={handleImageFallback}
         />
         {!product.available ? (

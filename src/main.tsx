@@ -4,10 +4,14 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './index.css'
 import App from './App.tsx'
 import { ProtectedRoute } from './components/admin/ProtectedRoute.tsx'
-import { AuthProvider } from './context/AuthContext.tsx'
 import { CartProvider } from './context/CartContext.tsx'
 
 const adminRoutes = {
+  AuthBoundary: lazy(() =>
+    import('./components/admin/AdminAuthBoundary.tsx').then((module) => ({
+      default: module.AdminAuthBoundary,
+    })),
+  ),
   Layout: lazy(() =>
     import('./components/admin/AdminLayout.tsx').then((module) => ({
       default: module.AdminLayout,
@@ -56,23 +60,23 @@ const routerBasename = baseUrl === './' ? '/' : baseUrl.replace(/\/$/, '')
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter basename={routerBasename}>
-      <AuthProvider>
-        <Suspense
-          fallback={
-            <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 text-sm font-semibold text-slate-600">
-              Cargando...
-            </div>
-          }
-        >
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <CartProvider>
-                  <App />
-                </CartProvider>
-              }
-            />
+      <Suspense
+        fallback={
+          <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 text-sm font-semibold text-slate-600">
+            Cargando...
+          </div>
+        }
+      >
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <CartProvider>
+                <App />
+              </CartProvider>
+            }
+          />
+          <Route element={<adminRoutes.AuthBoundary />}>
             <Route path="/admin/login" element={<adminRoutes.Login />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/admin" element={<adminRoutes.Layout />}>
@@ -84,9 +88,9 @@ createRoot(document.getElementById('root')!).render(
                 <Route path="settings" element={<adminRoutes.Settings />} />
               </Route>
             </Route>
-          </Routes>
-        </Suspense>
-      </AuthProvider>
+          </Route>
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   </StrictMode>,
 )

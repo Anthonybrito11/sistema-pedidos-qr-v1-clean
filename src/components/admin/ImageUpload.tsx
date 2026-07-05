@@ -38,7 +38,16 @@ export function ImageUpload({ label, folder, value, onChange }: ImageUploadProps
       <div className="mt-2 grid gap-3 sm:grid-cols-[96px_minmax(0,1fr)]">
         <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
           {value ? (
-            <img src={value} alt="" className="h-full w-full object-cover" onError={handleImageFallback} />
+            <img
+              src={value}
+              alt={`Vista previa de ${label.toLowerCase()}`}
+              className="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+              width="96"
+              height="96"
+              onError={handleImageFallback}
+            />
           ) : (
             <ImageUp className="text-slate-400" size={24} aria-hidden="true" />
           )}

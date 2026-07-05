@@ -2,9 +2,9 @@ import type { BusinessConfig } from '../types'
 
 export const businessConfig: BusinessConfig = {
   name: 'Cuki YunYun',
-  tagline: 'Cafetería - Coffe & Food',
+  tagline: 'Cafetería - Coffee & Food',
   whatsappNumber: '18097526222',
-  address: 'Plaza Velero, Veron Punta Cana, República Dominicana',
+  address: 'Plaza Velero, Verón Punta Cana, República Dominicana',
   currency: 'RD$',
   deliveryFee: 50,
   paymentMethods: [

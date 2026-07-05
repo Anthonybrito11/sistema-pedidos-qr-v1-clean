@@ -1,14 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
-import { CartDrawer } from './components/CartDrawer'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { FloatingCartButton } from './components/FloatingCartButton'
 import { Header } from './components/Header'
 import { useCart } from './context/useCart'
 import { businessConfig } from './data/businessConfig'
 import { categories, products } from './data/menuData'
-import { CheckoutPage, type CheckoutErrors } from './pages/CheckoutPage'
-import { ConfirmationPage } from './pages/ConfirmationPage'
+import type { CheckoutErrors } from './pages/CheckoutPage'
 import { MenuPage } from './pages/MenuPage'
-import { ReviewPage } from './pages/ReviewPage'
 import { getBusinessConfigWithFallback } from './services/businessService'
 import { getPublicCategoriesWithFallback } from './services/categoriesService'
 import { createOrder } from './services/ordersService'
@@ -23,6 +20,21 @@ import type {
   ViewName,
 } from './types'
 import { createOrderPayload } from './utils/order'
+
+const CartDrawer = lazy(() =>
+  import('./components/CartDrawer').then((module) => ({ default: module.CartDrawer })),
+)
+const CheckoutPage = lazy(() =>
+  import('./pages/CheckoutPage').then((module) => ({ default: module.CheckoutPage })),
+)
+const ConfirmationPage = lazy(() =>
+  import('./pages/ConfirmationPage').then((module) => ({
+    default: module.ConfirmationPage,
+  })),
+)
+const ReviewPage = lazy(() =>
+  import('./pages/ReviewPage').then((module) => ({ default: module.ReviewPage })),
+)
 
 const initialCustomerInfo: CustomerInfo = {
   name: '',
@@ -295,71 +307,72 @@ function App() {
         onHome={goToMenu}
       />
 
-      {view === 'menu' ? (
-        <MenuPage
-          categories={menuCategories}
-          products={menuProducts}
-          menuStatus={menuStatus}
-          selectedCategory={selectedCategory}
-          tableNumber={tableNumber}
-          onSelectCategory={setSelectedCategory}
-          onAddToCart={addItem}
-          getQuantity={getItemQuantity}
-        />
-      ) : null}
+      <Suspense fallback={null}>
+        {view === 'menu' ? (
+          <MenuPage
+            categories={menuCategories}
+            products={menuProducts}
+            menuStatus={menuStatus}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            onAddToCart={addItem}
+            getQuantity={getItemQuantity}
+          />
+        ) : null}
 
-      {view === 'checkout' ? (
-        <CheckoutPage
-          business={business}
+        {view === 'checkout' ? (
+          <CheckoutPage
+            business={business}
+            items={items}
+            orderType={orderType}
+            tableNumber={tableNumber}
+            customerInfo={customerInfo}
+            location={location}
+            locationMessage={locationMessage}
+            isLocating={isLocating}
+            subtotal={subtotal}
+            deliveryFee={currentOrder.deliveryFee}
+            total={currentOrder.total}
+            errors={formErrors}
+            onBack={goToMenu}
+            onOrderTypeChange={handleOrderTypeChange}
+            onTableChange={setTableNumber}
+            onCustomerChange={handleCustomerChange}
+            onLocate={handleLocate}
+            onReview={goToReview}
+          />
+        ) : null}
+
+        {view === 'review' ? (
+          <ReviewPage
+            business={business}
+            order={currentOrder}
+            onBack={() => setView('checkout')}
+            onEditCart={() => setIsCartOpen(true)}
+            onSent={handleOrderSent}
+            isSubmitting={isSubmittingOrder}
+            submitError={orderSubmitError}
+          />
+        ) : null}
+
+        {view === 'success' ? (
+          <ConfirmationPage
+            business={business}
+            lastOrder={lastOrder}
+            onNewOrder={startNewOrder}
+          />
+        ) : null}
+
+        <CartDrawer
           items={items}
-          orderType={orderType}
-          tableNumber={tableNumber}
-          customerInfo={customerInfo}
-          location={location}
-          locationMessage={locationMessage}
-          isLocating={isLocating}
           subtotal={subtotal}
-          deliveryFee={currentOrder.deliveryFee}
-          total={currentOrder.total}
-          errors={formErrors}
-          onBack={goToMenu}
-          onOrderTypeChange={handleOrderTypeChange}
-          onTableChange={setTableNumber}
-          onCustomerChange={handleCustomerChange}
-          onLocate={handleLocate}
-          onReview={goToReview}
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+          onCheckout={goToCheckout}
+          onUpdateQty={updateQuantity}
+          onRemove={removeItem}
         />
-      ) : null}
-
-      {view === 'review' ? (
-        <ReviewPage
-          business={business}
-          order={currentOrder}
-          onBack={() => setView('checkout')}
-          onEditCart={() => setIsCartOpen(true)}
-          onSent={handleOrderSent}
-          isSubmitting={isSubmittingOrder}
-          submitError={orderSubmitError}
-        />
-      ) : null}
-
-      {view === 'success' ? (
-        <ConfirmationPage
-          business={business}
-          lastOrder={lastOrder}
-          onNewOrder={startNewOrder}
-        />
-      ) : null}
-
-      <CartDrawer
-        items={items}
-        subtotal={subtotal}
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        onCheckout={goToCheckout}
-        onUpdateQty={updateQuantity}
-        onRemove={removeItem}
-      />
+      </Suspense>
 
       {view === 'menu' && (
         <FloatingCartButton

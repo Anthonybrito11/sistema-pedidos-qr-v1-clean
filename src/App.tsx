@@ -126,6 +126,13 @@ function App() {
   }, [])
 
   useEffect(() => {
+    if (business.deliveryEnabled === false && orderType === 'delivery') {
+      setOrderType('pickup')
+      setFormErrors({})
+    }
+  }, [business.deliveryEnabled, orderType])
+
+  useEffect(() => {
     if (menuStatus !== 'ready') {
       return
     }
@@ -167,6 +174,14 @@ function App() {
   }
 
   function handleOrderTypeChange(nextOrderType: OrderType) {
+    if (nextOrderType === 'delivery' && business.deliveryEnabled === false) {
+      setFormErrors((current) => ({
+        ...current,
+        address: 'El delivery no está disponible en este momento.',
+      }))
+      return
+    }
+
     setOrderType(nextOrderType)
     setFormErrors({})
   }
@@ -225,6 +240,13 @@ function App() {
     }
 
     if (orderType === 'delivery') {
+      if (business.deliveryEnabled === false) {
+        nextErrors.address = 'El delivery no está disponible en este momento.'
+        setOrderType('pickup')
+        setFormErrors(nextErrors)
+        return false
+      }
+
       if (!customerInfo.name.trim()) {
         nextErrors.name = 'Indica tu nombre.'
       }
@@ -324,15 +346,15 @@ function App() {
           <CheckoutPage
             business={business}
             items={items}
-            orderType={orderType}
-            tableNumber={tableNumber}
-            customerInfo={customerInfo}
+          orderType={orderType}
+          tableNumber={tableNumber}
+          customerInfo={customerInfo}
             location={location}
             locationMessage={locationMessage}
             isLocating={isLocating}
-            subtotal={subtotal}
-            deliveryFee={currentOrder.deliveryFee}
-            total={currentOrder.total}
+          subtotal={subtotal}
+          deliveryFee={currentOrder.deliveryFee}
+          total={currentOrder.total}
             errors={formErrors}
             onBack={goToMenu}
             onOrderTypeChange={handleOrderTypeChange}

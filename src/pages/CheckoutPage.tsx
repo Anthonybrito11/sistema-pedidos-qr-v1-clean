@@ -66,6 +66,7 @@ export function CheckoutPage({
         <OrderTypeSelector
           orderType={orderType}
           tableNumber={tableNumber}
+          deliveryEnabled={business.deliveryEnabled !== false}
           onChange={onOrderTypeChange}
         />
 

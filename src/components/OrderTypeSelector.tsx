@@ -4,6 +4,7 @@ import type { OrderType } from '../types'
 interface OrderTypeSelectorProps {
   orderType: OrderType
   tableNumber: string
+  deliveryEnabled: boolean
   onChange: (orderType: OrderType) => void
 }
 
@@ -36,6 +37,7 @@ const options: Array<{
 export function OrderTypeSelector({
   orderType,
   tableNumber,
+  deliveryEnabled,
   onChange,
 }: OrderTypeSelectorProps) {
   return (
@@ -51,31 +53,41 @@ export function OrderTypeSelector({
         {options.map((option) => {
           const Icon = option.icon
           const selected = option.id === orderType
+          const disabled = option.id === 'delivery' && !deliveryEnabled
 
           return (
             <button
               key={option.id}
               type="button"
               className={`min-h-32 rounded-lg border p-4 text-left transition duration-200 ${
-                selected
+                disabled
+                  ? 'border-tomato/35 bg-red-50 text-brand-700/70 ring-2 ring-tomato/10'
+                  : selected
                   ? 'border-mint bg-mint/10 shadow-card ring-4 ring-mint/15'
                   : 'border-brand-700/15 bg-paper hover:-translate-y-0.5 hover:border-brand-700/30 hover:bg-cream'
               }`}
               onClick={() => onChange(option.id)}
               aria-pressed={selected}
+              aria-disabled={disabled}
             >
               <span
                 className={`inline-flex h-10 w-10 items-center justify-center rounded-lg ${
-                  selected ? 'bg-brand-700 text-white' : 'bg-cream text-brand-700'
+                  disabled
+                    ? 'bg-tomato/10 text-tomato'
+                    : selected
+                    ? 'bg-brand-700 text-white'
+                    : 'bg-cream text-brand-700'
                 }`}
               >
                 <Icon size={20} aria-hidden="true" />
               </span>
-              <span className="mt-3 block text-base font-black text-brand-900">
+              <span className={`mt-3 block text-base font-black ${disabled ? 'text-tomato' : 'text-brand-900'}`}>
                 {option.title}
               </span>
               <span className="mt-1 block text-sm font-medium leading-5 text-brand-700/75">
-                {option.id === 'table' && tableNumber
+                {disabled
+                  ? 'No disponible en este momento.'
+                  : option.id === 'table' && tableNumber
                   ? `Mesa detectada: ${tableNumber}`
                   : option.description}
               </span>

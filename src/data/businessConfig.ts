@@ -7,6 +7,7 @@ export const businessConfig: BusinessConfig = {
   address: 'Plaza Velero, Verón Punta Cana, República Dominicana',
   currency: 'RD$',
   deliveryFee: 50,
+  deliveryEnabled: true,
   paymentMethods: [
     { id: 'cash', label: 'Efectivo' },
     { id: 'card', label: 'Tarjeta al recibir' },

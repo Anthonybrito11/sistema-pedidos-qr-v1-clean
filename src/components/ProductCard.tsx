@@ -47,6 +47,11 @@ export function ProductCard({ product, quantity, onAdd, index = 0 }: ProductCard
                 Popular
               </span>
             ) : null}
+            {product.isDailySpecial ? (
+              <span className="shrink-0 rounded-lg bg-mint px-2 py-1 text-[11px] font-black text-white">
+                Hoy
+              </span>
+            ) : null}
           </div>
           <p className="mt-1 line-clamp-2 text-sm font-medium leading-5 text-brand-700/75">
             {product.description}

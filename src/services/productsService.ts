@@ -12,7 +12,7 @@ import { uploadImage } from './storageService'
 export async function getPublicProductsWithFallback(): Promise<Product[]> {
   try {
     if (!supabase) {
-      return localProducts
+      return localProducts.filter(isProductVisibleToday)
     }
 
     const { data, error } = await supabase
@@ -28,12 +28,14 @@ export async function getPublicProductsWithFallback(): Promise<Product[]> {
     }
 
     if (!data.length) {
-      return localProducts
+      return localProducts.filter(isProductVisibleToday)
     }
 
-    return data.map(mapDbProductToProduct)
+    return data
+      .filter(isDbProductVisibleToday)
+      .map(mapDbProductToProduct)
   } catch {
-    return localProducts
+    return localProducts.filter(isProductVisibleToday)
   }
 }
 
@@ -71,6 +73,8 @@ export async function createProduct(values: ProductFormValues) {
       description: values.description || null,
       price: values.price,
       image_url: values.image_url || null,
+      is_daily_special: values.is_daily_special,
+      available_days: values.is_daily_special ? values.available_days : null,
       is_available: values.is_available,
       is_active: values.is_active,
       sort_order: values.sort_order,
@@ -99,6 +103,8 @@ export async function updateProduct(id: string, values: ProductFormValues) {
       description: values.description || null,
       price: values.price,
       image_url: values.image_url || null,
+      is_daily_special: values.is_daily_special,
+      available_days: values.is_daily_special ? values.available_days : null,
       is_available: values.is_available,
       is_active: values.is_active,
       sort_order: values.sort_order,
@@ -149,4 +155,24 @@ function slugify(value: string) {
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
+}
+
+function getTodayIndex() {
+  return new Date().getDay()
+}
+
+function isDbProductVisibleToday(product: DbProduct) {
+  if (!product.is_daily_special) {
+    return true
+  }
+
+  return (product.available_days || []).includes(getTodayIndex())
+}
+
+function isProductVisibleToday(product: Product) {
+  if (!product.isDailySpecial) {
+    return true
+  }
+
+  return (product.availableDays || []).includes(getTodayIndex())
 }

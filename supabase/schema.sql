@@ -54,6 +54,11 @@ create table if not exists public.products (
   image_url text,
   is_available boolean not null default true,
   is_active boolean not null default true,
+  is_daily_special boolean not null default false,
+  available_days integer[] check (
+    available_days is null
+    or available_days <@ array[0, 1, 2, 3, 4, 5, 6]
+  ),
   sort_order integer not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -96,6 +101,7 @@ create index if not exists idx_business_settings_active on public.business_setti
 create index if not exists idx_categories_business_active_sort on public.categories (business_id, is_active, sort_order);
 create index if not exists idx_products_business_active_available_sort on public.products (business_id, is_active, is_available, sort_order);
 create index if not exists idx_products_category on public.products (category_id);
+create index if not exists idx_products_daily_special on public.products (is_daily_special);
 create index if not exists idx_orders_business_status_created on public.orders (business_id, status, created_at desc);
 create index if not exists idx_order_items_order on public.order_items (order_id);
 

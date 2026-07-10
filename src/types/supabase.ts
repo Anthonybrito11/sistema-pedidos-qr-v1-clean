@@ -55,6 +55,8 @@ export type DbProduct = {
   image_url: string | null
   is_available: boolean
   is_active: boolean
+  is_daily_special: boolean
+  available_days: number[] | null
   sort_order: number
   created_at: string
   updated_at: string
@@ -103,6 +105,8 @@ export type ProductFormValues = {
   price: number
   category_id: string | null
   image_url: string
+  is_daily_special: boolean
+  available_days: number[]
   is_available: boolean
   is_active: boolean
   sort_order: number
@@ -210,6 +214,8 @@ export function mapDbProductToProduct(product: DbProduct): Product {
     image: product.image_url || '',
     category: product.category_id || '',
     available: product.is_available,
+    isDailySpecial: product.is_daily_special,
+    availableDays: product.available_days || [],
     featured: false,
     sortOrder: product.sort_order,
     active: product.is_active,

@@ -19,10 +19,22 @@ const emptyForm: ProductFormValues = {
   price: 0,
   category_id: null,
   image_url: '',
+  is_daily_special: false,
+  available_days: [],
   is_available: true,
   is_active: true,
   sort_order: 0,
 }
+
+const weekDays = [
+  { value: 0, label: 'Domingo' },
+  { value: 1, label: 'Lunes' },
+  { value: 2, label: 'Martes' },
+  { value: 3, label: 'Miercoles' },
+  { value: 4, label: 'Jueves' },
+  { value: 5, label: 'Viernes' },
+  { value: 6, label: 'Sabado' },
+]
 
 export function AdminProducts() {
   const [products, setProducts] = useState<DbProduct[]>([])
@@ -62,6 +74,8 @@ export function AdminProducts() {
       price: Number(product.price),
       category_id: product.category_id,
       image_url: product.image_url || '',
+      is_daily_special: product.is_daily_special,
+      available_days: product.available_days || [],
       is_available: product.is_available,
       is_active: product.is_active,
       sort_order: product.sort_order,
@@ -76,6 +90,10 @@ export function AdminProducts() {
     }
     if (Number.isNaN(form.price) || form.price < 0) {
       setError('El precio debe ser mayor o igual a 0.')
+      return
+    }
+    if (form.is_daily_special && form.available_days.length === 0) {
+      setError('Selecciona al menos un dia para el plato del dia.')
       return
     }
 
@@ -135,7 +153,14 @@ export function AdminProducts() {
               <div>
                 <p className="font-black">{product.name}</p>
                 <p className="line-clamp-2 text-sm text-slate-500">{product.description || 'Sin descripcion'}</p>
-                <p className="mt-1 text-xs font-bold text-slate-500">{product.categories?.name || 'Sin categoria'}</p>
+                <div className="mt-1 flex flex-wrap gap-2 text-xs font-bold text-slate-500">
+                  <span>{product.categories?.name || 'Sin categoria'}</span>
+                  {product.is_daily_special ? (
+                    <span className="rounded-lg bg-sunshine px-2 py-0.5 text-brand-900">
+                      Plato del dia
+                    </span>
+                  ) : null}
+                </div>
               </div>
               <p className="font-black">{formatCurrency(Number(product.price))}</p>
               <div className="flex flex-wrap gap-2 lg:justify-end">
@@ -177,6 +202,41 @@ export function AdminProducts() {
             </select>
           </div>
           <ImageUpload label="Imagen" value={form.image_url} onChange={(value) => setForm({ ...form, image_url: value })} />
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+            <label className="flex items-center gap-2 text-sm font-bold text-slate-700">
+              <input
+                type="checkbox"
+                checked={form.is_daily_special}
+                onChange={(event) =>
+                  setForm({
+                    ...form,
+                    is_daily_special: event.target.checked,
+                    available_days: event.target.checked ? form.available_days : [],
+                  })
+                }
+              />
+              Plato del dia
+            </label>
+            {form.is_daily_special ? (
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {weekDays.map((day) => (
+                  <label key={day.value} className="flex items-center gap-2 text-sm font-bold text-slate-700">
+                    <input
+                      type="checkbox"
+                      checked={form.available_days.includes(day.value)}
+                      onChange={(event) => {
+                        const nextDays = event.target.checked
+                          ? [...form.available_days, day.value].sort((first, second) => first - second)
+                          : form.available_days.filter((value) => value !== day.value)
+                        setForm({ ...form, available_days: nextDays })
+                      }}
+                    />
+                    {day.label}
+                  </label>
+                ))}
+              </div>
+            ) : null}
+          </div>
           <Field label="Orden" type="number" value={String(form.sort_order)} onChange={(value) => setForm({ ...form, sort_order: Number(value) })} />
           <div className="grid gap-2">
             <label className="flex items-center gap-2 text-sm font-bold text-slate-700">

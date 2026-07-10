@@ -22,6 +22,8 @@ export interface Product {
   image: string
   category: string
   available: boolean
+  isDailySpecial?: boolean
+  availableDays?: number[]
   featured?: boolean
   sortOrder?: number
   active?: boolean

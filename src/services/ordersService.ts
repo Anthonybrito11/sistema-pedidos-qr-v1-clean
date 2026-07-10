@@ -3,12 +3,20 @@ import type { OrderPayload } from '../types'
 import type { OrderStatus, OrderWithItems } from '../types/supabase'
 import { getActiveBusinessSettings } from './businessService'
 
-const CLOSED_ORDER_STATUSES: OrderStatus[] = ['completed', 'cancelled']
-
 export function getOrdersCutoffDate(days = 31) {
   const cutoffDate = new Date()
   cutoffDate.setDate(cutoffDate.getDate() - days)
   return cutoffDate
+}
+
+export function getOrdersDeleteRange(days = 30) {
+  const endDate = new Date()
+  endDate.setHours(0, 0, 0, 0)
+
+  const startDate = new Date(endDate)
+  startDate.setDate(startDate.getDate() - days)
+
+  return { startDate, endDate }
 }
 
 export function generateOrderCode() {
@@ -126,23 +134,23 @@ export async function getOrdersForCsv(days = 31): Promise<OrderWithItems[]> {
   return data
 }
 
-export async function deleteOldClosedOrders(days = 31) {
+export async function deleteRecentOrderHistory(days = 30) {
   if (!supabase) {
     throw new Error('Supabase no esta configurado.')
   }
 
-  const cutoffDate = getOrdersCutoffDate(days)
-  const { data: oldOrders, error: selectError } = await supabase
+  const { startDate, endDate } = getOrdersDeleteRange(days)
+  const { data: orders, error: selectError } = await supabase
     .from('orders')
     .select('id')
-    .lt('created_at', cutoffDate.toISOString())
-    .in('status', CLOSED_ORDER_STATUSES)
+    .gte('created_at', startDate.toISOString())
+    .lt('created_at', endDate.toISOString())
 
   if (selectError) {
     throw selectError
   }
 
-  const orderIds = oldOrders.map((order) => order.id)
+  const orderIds = orders.map((order) => order.id)
 
   if (orderIds.length === 0) {
     return {

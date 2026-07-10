@@ -1,26 +1,24 @@
 import { Download, Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import {
-  deleteOldClosedOrders,
-  getOrdersCutoffDate,
+  deleteRecentOrderHistory,
+  getOrdersDeleteRange,
   getOrdersForCsv,
 } from '../../services/ordersService'
 import type { OrderWithItems } from '../../types/supabase'
 import { formatCurrency } from '../../utils/currency'
 
 const HISTORY_DAYS = 31
+const DELETE_HISTORY_DAYS = 30
 
 export function AdminReports() {
   const [exporting, setExporting] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
-  const cutoffDate = useMemo(() => getOrdersCutoffDate(HISTORY_DAYS), [])
-  const cutoffLabel = cutoffDate.toLocaleDateString('es-DO', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  })
+  const deleteRange = useMemo(() => getOrdersDeleteRange(DELETE_HISTORY_DAYS), [])
+  const deleteStartLabel = formatDateLabel(deleteRange.startDate)
+  const deleteEndLabel = formatDateLabel(new Date(deleteRange.endDate.getTime() - 1))
 
   async function handleExport() {
     setExporting(true)
@@ -46,7 +44,7 @@ export function AdminReports() {
 
   async function handleDeleteOldOrders() {
     const confirmed = window.confirm(
-      `Esto eliminara pedidos completados o cancelados anteriores al ${cutoffLabel}. Los pedidos pendientes, confirmados o en preparacion no se borraran. Deseas continuar?`,
+      `Esto eliminara todos los pedidos creados desde el ${deleteStartLabel} hasta el ${deleteEndLabel}. Los pedidos de hoy no se borraran. Deseas continuar?`,
     )
 
     if (!confirmed) {
@@ -58,10 +56,10 @@ export function AdminReports() {
     setError('')
 
     try {
-      const { deletedCount, matchedCount } = await deleteOldClosedOrders(HISTORY_DAYS)
+      const { deletedCount, matchedCount } = await deleteRecentOrderHistory(DELETE_HISTORY_DAYS)
 
       if (matchedCount === 0) {
-        setMessage('No habia pedidos antiguos completados o cancelados para borrar.')
+        setMessage('No habia pedidos en ese rango para borrar.')
         return
       }
 
@@ -77,7 +75,7 @@ export function AdminReports() {
         return
       }
 
-      setMessage(`Se eliminaron ${deletedCount} pedidos antiguos.`)
+      setMessage(`Se eliminaron ${deletedCount} pedidos del historial reciente.`)
     } catch (currentError) {
       setError(currentError instanceof Error ? currentError.message : 'No se pudo borrar el historial.')
     } finally {
@@ -121,10 +119,10 @@ export function AdminReports() {
         </article>
 
         <article className="rounded-lg border border-red-200 bg-white p-4">
-          <h2 className="text-xl font-black text-red-950">Borrar historial antiguo</h2>
+          <h2 className="text-xl font-black text-red-950">Borrar ultimos 30 dias</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Elimina pedidos completados o cancelados anteriores al {cutoffLabel}. No elimina
-            pedidos activos ni pedidos de los ultimos 31 dias.
+            Elimina todos los pedidos creados desde el {deleteStartLabel} hasta el {deleteEndLabel}.
+            No elimina pedidos de hoy.
           </p>
           <button
             type="button"
@@ -133,12 +131,20 @@ export function AdminReports() {
             disabled={exporting || deleting}
           >
             <Trash2 size={17} aria-hidden="true" />
-            {deleting ? 'Borrando...' : 'Borrar historial antiguo'}
+            {deleting ? 'Borrando...' : 'Borrar ultimos 30 dias'}
           </button>
         </article>
       </div>
     </section>
   )
+}
+
+function formatDateLabel(date: Date) {
+  return date.toLocaleDateString('es-DO', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  })
 }
 
 function downloadExcelFile(orders: OrderWithItems[]) {
